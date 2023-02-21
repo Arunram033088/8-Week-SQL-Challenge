@@ -1,7 +1,7 @@
 # 8-Week-SQL-Challenge
 Analyzing and solving business problems created by Danny Ma
 
-The 8 week SQL challenge was created by Danny Ma. It contains business problems and questions from 8 different businesses to be solved using SQL. The case studies can be accessed at [[8-Week-SQL-Challenge]([url](https://8weeksqlchallenge.com/getting-started/))]
+The 8 week SQL challenge was created by Danny Ma. It contains business problems and questions from 8 different businesses to be solved using SQL. The case studies can be accessed at [[8-Week-SQL-Challenge](https://8weeksqlchallenge.com/)]
 
 The topics covered in the case studies include;
 
