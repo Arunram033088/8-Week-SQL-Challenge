@@ -87,3 +87,56 @@ WHERE (SELECT m.product_id FROM menu1 m JOIN sales s
 	    ORDER BY s.order_date DESC
 		LIMIT 1)
 GROUP BY 1;
+
+--b) using CTE:
+
+WITH first_item AS (
+	SELECT customer_id,
+		   product_name,
+		   dense_rank () OVER (PARTITION BY customer_id ORDER BY order_date) AS ranks
+	FROM sales
+	JOIN menu1
+	USING (product_id))
+SELECT customer_id,
+	   product_name
+FROM first_item
+WHERE ranks = 1
+GROUP BY 1,2;
+
+--Here the result value differs between the subqueries and CTE since person A ordered 2 items on his/her first order and whereas only order is getting
+--reflected in the subqueries and CTE gets both the items.
+
+--4) What is the most purchased item on the menu and how many times was it purchased by all customers?
+
+SELECT m.product_name AS most_purchased,
+	   count(s.product_id) AS quantity
+FROM sales s
+JOIN menu1 m
+ON s.product_id = m.product_id
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1;
+
+--The most purchased item is ramen and it was purchased 8 times.
+
+--5) Which item was the most popular for each customer?
+
+WITH most_popular_dish AS (
+	SELECT s.customer_id,
+		   m.product_name,
+		   count(s.product_id) AS most_popular,
+		   dense_rank() OVER (PARTITION BY s.customer_id ORDER BY count(s.product_id) DESC) AS ranks
+	FROM sales s
+	JOIN menu1 m
+	ON s.product_id = m.product_id
+	GROUP BY 1,2)
+SELECT customer_id,
+	   product_name,
+	   most_popular
+FROM most_popular_dish
+WHERE ranks = 1; 
+
+--* Customer A's most popular item is ramen and they purchased it 3 times
+--* Customer B purchased all items on the menu twice
+--* Customer C's most popular item was ramen and they purchased it 3 times
+-- Here I assumed that any order placed on the same date as join_date was placed after the customer had become a member
