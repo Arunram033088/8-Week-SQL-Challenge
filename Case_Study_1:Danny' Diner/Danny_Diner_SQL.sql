@@ -72,6 +72,8 @@ SELECT customer_id,
 FROM sales 
 GROUP BY 1;
 
+
+
 --3) What was the first item from the menu purchased by each customer?
 --There are 2 ways in deriving answer for this query and one is using subqueries and the next is using CTE
 
