@@ -142,3 +142,25 @@ WHERE ranks = 1;
 --* Customer B purchased all items on the menu twice
 --* Customer C's most popular item was ramen and they purchased it 3 times
 -- Here I assumed that any order placed on the same date as join_date was placed after the customer had become a member
+
+--6) Which item was purchased first by the customer after they became a member?
+
+WITH membership_info AS (
+	SELECT s.customer_id,
+		   s.order_date,
+		   m.product_name,
+		   me.join_date,
+		   dense_rank() OVER (PARTITION BY s.customer_id ORDER BY s.order_date) AS ranks
+	FROM sales s
+	JOIN members me
+	ON s.customer_id = me.customer_id
+	JOIN menu1 m
+	ON s.product_id = m.product_id
+	WHERE s.order_date >= me.join_date)
+SELECT customer_id, product_name, order_date, join_date
+FROM membership_info
+WHERE ranks = 1;
+
+--After becoming a member,
+--Customer A first purchased curry
+--Customer B purchased sushi.
