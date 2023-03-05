@@ -164,3 +164,28 @@ WHERE ranks = 1;
 --After becoming a member,
 --Customer A first purchased curry
 --Customer B purchased sushi.
+
+--7) Which item was purchased just before the customer became a member?
+
+WITH purchase_before_membership AS (
+	SELECT s.customer_id,
+		   m.product_name,
+		   s.order_date,
+		   me.join_date,
+		   dense_rank() OVER (PARTITION BY s.customer_id ORDER BY s.order_date DESC) AS ranks
+    FROM sales s
+	JOIN members me
+	ON s.customer_id = me.customer_id
+	JOIN menu1 m
+	ON s.product_id = m.product_id
+	WHERE s.order_date < me.join_date)
+SELECT customer_id,
+	   product_name,
+	   order_date,
+	   join_date
+FROM purchase_before_membership
+WHERE ranks = 1;
+
+--Just before becoming a member,
+--Customer A purchased sushi and curry on 2021-01-01
+--Customer B ordered sushi on 2021-01-04
